@@ -21,14 +21,15 @@ app.post('/todos', (req, res) => {
 	todo.save().then((doc) => {
 		res.send(doc);
 	}, (e) => {
-		res.send(e);
+		res.status(400).send(e);
 	});
-	//res.send('<h1>Hello Express!</h1>');
 })
 
 app.listen(3000, () => {
 	console.log('Started on port 3000');
 })
+
+module.exports = {app};
 
 //var newTodo = new Todo({
 //	text: 'Cook dinner'
