@@ -8,6 +8,7 @@ const {ObjectID} = require('mongodb');
 var{mongoose} = require('./db/mongoose');
 var {Todo} = require('./models/todos');
 var {User} = require('./models/user');
+var {authenticate} = require('./middleware/authenticate');
 
 var app = express();
 const port = process.env.PORT;
@@ -21,7 +22,7 @@ app.post('/todos', (req, res) => {
 		text: req.body.text,
 		completedAt: req.body.completedAt,
 		completed: req.body.completed
-	})
+	});
 
 	todo.save().then((doc) => {
 		res.send(doc);
@@ -101,7 +102,7 @@ app.patch('/todos/:id', (req, res) => {
 		res.send({todo});
 	}).catch((e) => {
 		res.status(400).send(e);
-	})
+	});
 });
 
 // POST /users
@@ -118,6 +119,10 @@ app.post('/users', (req, res) => {
 	}).catch((e) => {
 		res.status(400).send(e);
 	});
+});
+
+app.get('/users/me', authenticate, (req, res) => {
+	res.send(req.user);
 });
 
 app.listen(port, () => {
