@@ -123,6 +123,7 @@ app.post('/users', (req, res) => {
 //
 app.get('/users/me', authenticate, (req, res) => {
 	res.send(req.user);
+	// the above authenticate middleware find user using x-auth token and set user and token into request
 });
 
 // POST /users/login {email, password}
@@ -137,6 +138,14 @@ app.post('/user/login', (req, res) => {
 		});
     //res.send({user});
 	}).catch((e) => {
+		res.status(400).send(e);
+	});
+});
+
+app.delete('/user/me/token', authenticate, (req, res) => {
+	req.user.removeToken(req.token).then(() => {
+		res.status(200).send('You are successfully log out');
+	}, (e) => {
 		res.status(400).send(e);
 	});
 });
